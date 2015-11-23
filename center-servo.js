@@ -34,7 +34,10 @@ board.on("ready", function() {
  	},
  	inverseValueE: inverseValueE,
  	forwardX: forwardX,
- 	forwardY: forwardY
+ 	forwardY: forwardY,
+ 	inverseE: inverseE,
+ 	inverseS: inverseS,
+ 	armMoveTo: armMoveTo
  });
 });
 function test(){
@@ -72,6 +75,14 @@ function inverseValueE(x, y){
 
 }
 
+function inverseE(x,y){
+	var E =  Math.acos( ( Math.pow(x, 2)+ Math.pow(y,2) - Math.pow(L1, 2) - Math.pow(L2,2) )/(2*L1*L2) );
+	return toDegrees(E);
+}
+function inverseS(x,y){
+	var S = Math.atan(y/x) - Math.acos( ( Math.pow(x,2)+Math.pow(y,2)+Math.pow(L1,2)-Math.pow(L2,2) )/( (2*L1 * Math.sqrt( Math.pow(x,2)+Math.pow(y,2) ) ) ) );
+	return toDegrees(S);
+}
 function forwardX(S, E){
 	S = toRadians(S);
 	E = toRadians(E);
@@ -84,6 +95,12 @@ function forwardY(S, E){
 	E = toRadians(E);
 	var y = ( L1*Math.sin(S) ) + (L2 * Math.sin(S+E));
 	return y;
+}
+function armMoveTo(x,y){
+	var S = inverseS(x,y);
+	var E = inverseE(x,y);
+	shoulderServo.to(shoulderPosition+S);
+	elbowServo.to(elbowPosition - E);
 }
 function toDegrees (angle) {
   return angle * (180 / Math.PI);
