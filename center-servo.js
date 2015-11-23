@@ -6,8 +6,11 @@ require('tty').setRawMode(true);
 
 var elbowServo, shoulderServo = null;
 var elbowOffset = 38;
-var shoulderOffset = 5;
-var elbowPosition = 90 + elbowOffset, shoulderPosition = 90+shoulderOffset;
+var shoulderOffset = 7;
+var elbowPosition = 90 + elbowOffset; 
+var shoulderPosition = 90+shoulderOffset;
+var L1 = 7; // panjang bahu ke siku cm
+var L2 = 7; // panjang siku ke pergelangan tangan dari cm
 board.on("ready", function() {
   
  	elbowServo = new five.Servo({
@@ -23,9 +26,15 @@ board.on("ready", function() {
  	//shoulderServo.sweep();
  	// deviasi 56derajat
  	board.repl.inject({
- 	test: function(){
- 		console.log('test');
- 	}
+ 	shoulderTo: function(degree){
+ 		shoulderServo.to(shoulderPosition + degree);
+ 	},
+ 	elbowTo: function(degree){
+ 		elbowServo.to(elbowPosition - degree);
+ 	},
+ 	inverseValueE: inverseValueE,
+ 	forwardX: forwardX,
+ 	forwardY: forwardY
  });
 });
 function test(){
@@ -55,6 +64,33 @@ stdin.on('keypress', function (chunk, key) {
   	console.log('move elbow to '+elbowPosition);
   }
 });
-  */
+*/
+
+function inverseValueE(x, y){
+	var E = Math.acos( ( Math.pow(x, 2)+ Math.pow(y,2) - Math.pow(L1, 2) - Math.pow(L2,2) )/(2*L1*L2) );
+	return E;
+
+}
+
+function forwardX(S, E){
+	S = toRadians(S);
+	E = toRadians(E);
+	var x = ( L1*Math.cos(S) ) + (L2 * Math.cos(S+E));
+	
+	return x;
+}
+function forwardY(S, E){
+	S = toRadians(S);
+	E = toRadians(E);
+	var y = ( L1*Math.sin(S) ) + (L2 * Math.sin(S+E));
+	return y;
+}
+function toDegrees (angle) {
+  return angle * (180 / Math.PI);
+}
  
+ function toRadians (angle) {
+  return angle * (Math.PI / 180);
+}
+
  
