@@ -10,18 +10,18 @@ var shoulderOffset = 7;
 var elbowPosition = 90 + elbowOffset; 
 var shoulderPosition = 90+shoulderOffset;
 var L1 = 7; // panjang bahu ke siku cm
-var L2 = 7; // panjang siku ke pergelangan tangan dari cm
+var L2 = 7.5; // panjang siku ke pergelangan tangan dari cm
 board.on("ready", function() {
   
  	elbowServo = new five.Servo({
 	  pin: 6,
-	  startAt: 90 + elbowOffset
+	  startAt: 45 + elbowOffset
 	});
  	//elbowServo.sweep();
 
  	shoulderServo = new five.Servo({
 	  pin: 5,
-	  startAt: 90 + shoulderOffset
+	  startAt: 135 + shoulderOffset
 	});
  	//shoulderServo.sweep();
  	// deviasi 56derajat
@@ -99,6 +99,7 @@ function forwardY(S, E){
 function armMoveTo(x,y){
 	var S = inverseS(x,y);
 	var E = inverseE(x,y);
+	console.log(S+','+E);
 	shoulderServo.to(shoulderPosition+S);
 	elbowServo.to(elbowPosition - E);
 }
